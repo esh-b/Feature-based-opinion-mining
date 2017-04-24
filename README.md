@@ -11,4 +11,5 @@
 
 ### About the authors: ###
 >***Magdalini Eirinaki, Shamita Pisal, Japinder Singh***
+---
 >Computer Engineering Department, San Jose State University, One Washington Square, San Jose, CA 95192, United States
