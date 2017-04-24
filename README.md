@@ -10,6 +10,4 @@
 *   Consider the scenario when the **product sellers** want to know which of their product features stood it in the market or which of their product features were not liked by majority of their users, this kind of analysis is very helpful.
 
 ### About the authors: ###
->***Magdalini Eirinaki, Shamita Pisal, Japinder Singh***
----
->Computer Engineering Department, San Jose State University, One Washington Square, San Jose, CA 95192, United States
+>***Magdalini Eirinaki, Shamita Pisal, Japinder Singh*** (Computer Engineering Department, San Jose State University, One Washington Square, San Jose, CA 95192, United States)
