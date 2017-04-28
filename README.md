@@ -15,7 +15,7 @@
 ### Steps to run the code:
 *   All the codes are written in ***Python 3.5.2***.
 *   The sample review file (*CanonG3.txt*) is uploaded in the repository. All the review files to be analyzed are assumed to be in this format although the python code (*main.py*) can be modified to read the review file according to its format.
-*   All the requirements are installed before running the code by running the command `pip3 install -r requirements.txt`.
+*   All the requirements are installed before running the code by running the command in the terminal: `pip3 install -r requirements.txt`.
 *   To run the algorithms on the sample review file, just type the following command in the terminal: `python3 main.py CanonG3.txt`. 
 *   Running the above command creates 3 files:
     * *featureScore.txt* which contains all the potential features about the product and their scores.
