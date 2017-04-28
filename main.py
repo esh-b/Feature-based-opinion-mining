@@ -1,3 +1,8 @@
+
+"""
+The main code which runs the entire review analysis
+"""
+
 import sys
 import HAC
 import MOS
@@ -6,7 +11,7 @@ import operator
 import collections
 from textblob import TextBlob
 
-#Get the filename as command line argument
+#Get the review filename as command line argument
 filename = sys.argv[1]
 
 #reviewTitle is the list containing title of all reviews
