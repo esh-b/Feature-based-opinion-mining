@@ -3,13 +3,14 @@
 """
 from textblob import TextBlob
 import operator
-import collections
+from collections import OrderedDict
 
 """
 Each adjective is given a score (depending on its polarity).
 These scores then determine the avg score of each feature.
 """
 
+#Return the adjective scores for adjectives in adjList
 def getScore(adjList):
 
 	inversion_words = []
@@ -26,4 +27,4 @@ def getScore(adjList):
 	adjScores = sorted(adjScores.items(), key=operator.itemgetter(1), reverse=True)
 
 	#Print the adjectives and their scores
-	return(collections.OrderedDict(adjScores))
+	return(OrderedDict(adjScores))

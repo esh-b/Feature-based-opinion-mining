@@ -1,0 +1,4 @@
+nltk==3.2.2
+numpy==1.12.1
+pyenchant==1.6.8
+textblob==0.12.0

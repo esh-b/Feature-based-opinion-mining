@@ -1,7 +1,7 @@
 import re
 import string
 import operator
-import collections
+from collections import OrderedDict
 from textblob import TextBlob
 from nltk.corpus import stopwords
 
@@ -175,8 +175,8 @@ def rankFeatures(adj_scores, features, reviewTitle, reviewContent):
 		avg_feature_score[noun] = global_noun_scores[noun] / float(global_noun_adj_count[noun])
 	avg_feature_score = sorted(avg_feature_score.items(), key=operator.itemgetter(1), reverse=True)
 
-	pos_review_index = collections.OrderedDict(sorted(pos_review_index.items(), key=operator.itemgetter(1), reverse=True))
-	neg_review_index = collections.OrderedDict(sorted(neg_review_index.items(), key=operator.itemgetter(1)))
+	pos_review_index = OrderedDict(sorted(pos_review_index.items(), key=operator.itemgetter(1), reverse=True))
+	neg_review_index = OrderedDict(sorted(neg_review_index.items(), key=operator.itemgetter(1)))
 	return pos_review_index, neg_review_index, avg_feature_score
 
 #Find the closest feature for an adj. Assumes a noun is found within 3 steps from the adj.
