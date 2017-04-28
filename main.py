@@ -1,5 +1,10 @@
 import sys
 import HAC
+import MOS
+import AdjScore
+import operator
+import collections
+from textblob import TextBlob
 
 #Get the filename as command line argument
 filename = sys.argv[1]
@@ -8,10 +13,9 @@ filename = sys.argv[1]
 reviewTitle = []
 
 #reviewContent is the list containing all reviews
-#reviewTitle[0] and reviewContent[0] will point to the title and review content of the 1st review
 reviewContent = []
 
-#Extract data from the file
+#Extract review title and content from the file
 with open(filename) as f:
 	review = []
 	for line in f:
@@ -29,4 +33,11 @@ with open(filename) as f:
 				continue
 	reviewContent.append(review)
 
-nounScores, adjDict = HAC.findFeatures(reviewContent)
+#The HAC algorithm to extract features and adjectives in the review
+featureList, adjDict = HAC.findFeatures(reviewContent)
+
+#Get adjective scores for each adjective
+adjScores = AdjScore.getScore(adjDict)
+
+#MOS algorithm to get feature score and review score
+posRevIndex, negRevIndex, avgFeatScore = MOS.rankFeatures(adjScores, featureList, reviewTitle, reviewContent)
