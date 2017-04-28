@@ -6,6 +6,7 @@ The main code which runs the entire review analysis
 import sys
 import HAC
 import MOS
+import FileCreationWithBigrams
 import AdjScore
 import operator
 import collections
@@ -38,6 +39,10 @@ with open(filename) as f:
 				continue
 	reviewContent.append(review)
 
+#Creating a File attaching Bigrams
+FileCreationWithBigrams.fileCreation(reviewContent,filename)
+
+
 #The HAC algorithm to extract features and adjectives in the review
 featureList, adjDict = HAC.findFeatures(reviewContent)
 
@@ -46,3 +51,5 @@ adjScores = AdjScore.getScore(adjDict)
 
 #MOS algorithm to get feature score and review score
 posRevIndex, negRevIndex, avgFeatScore = MOS.rankFeatures(adjScores, featureList, reviewTitle, reviewContent)
+
+
