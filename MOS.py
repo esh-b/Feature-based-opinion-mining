@@ -4,6 +4,7 @@ import operator
 from collections import OrderedDict
 from textblob import TextBlob
 from nltk.corpus import stopwords
+import os
 
 apostropheList = {"n't" : "not","aren't" : "are not","can't" : "cannot","couldn't" : "could not","didn't" : "did not","doesn't" : "does not", \
 				  "don't" : "do not","hadn't" : "had not","hasn't" : "has not","haven't" : "have not","he'd" : "he had","he'll" : "he will", \
@@ -177,6 +178,8 @@ def rankFeatures(adj_scores, features, reviewTitle, reviewContent):
 
 	pos_review_index = OrderedDict(sorted(pos_review_index.items(), key=operator.itemgetter(1), reverse=True))
 	neg_review_index = OrderedDict(sorted(neg_review_index.items(), key=operator.itemgetter(1)))
+
+	os.remove("modified.txt")
 	return pos_review_index, neg_review_index, avg_feature_score
 
 #Find the closest feature for an adj. Assumes a noun is found within 3 steps from the adj.
