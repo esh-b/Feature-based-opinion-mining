@@ -141,19 +141,12 @@ def filterAdj(nounScores, adjDict, phrasesDict):
 				newPhrases[line_words] = count
 
 	newPhrases = OrderedDict(sorted(newPhrases.items(), key=operator.itemgetter(1), reverse=True))
-
-	"""
-	for i, j in newPhrases.items():
-		print(i)
-	"""
-
+	
 	features = []
 	for index, key in enumerate(nounScores):
 		value = nounScores[key]
 		if value >= 3:
 			if "_" in key or (enchVocab.check(str(key)) and len(key) > 2):
-				#if "_" in key:
-				#	key = key.replace("_", "")
 				features.append(key)
 
 	return features, adjectList
