@@ -52,7 +52,6 @@ adjScores = AdjScore.getScore(adjDict)
 #MOS algorithm to get feature score and review score
 posRevIndex, negRevIndex, avgFeatScore = MOS.rankFeatures(adjScores, featureList, reviewTitle, reviewContent)
 
-<<<<<<< HEAD
 with open('featureScore.txt', 'w') as fp:
     fp.write('\n'.join('%s, %s' % x for x in avgFeatScore))
 
@@ -63,6 +62,3 @@ with open('positiveReviews.txt', 'w') as fp:
 with open('negativeReviews.txt', 'w') as fp:
 	for x, y in negRevIndex.items():
 		fp.write('[t] ' + reviewTitle[x] + '\n' + '[r] ' + ''.join(reviewContent[x]) + '\n\n')
-=======
-
->>>>>>> f05548394915d7788b552faca6537d01144ab72f
