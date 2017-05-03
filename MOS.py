@@ -1,3 +1,7 @@
+"""
+  The MOS algorithm implementation - Classification of reviews and calculation of feature scores
+"""
+
 import re
 import string
 import operator
@@ -6,6 +10,8 @@ from textblob import TextBlob
 from nltk.corpus import stopwords
 import os
 
+
+#Dict to convert the raw user text to meaningful words for analysis
 apostropheList = {"n't" : "not","aren't" : "are not","can't" : "cannot","couldn't" : "could not","didn't" : "did not","doesn't" : "does not", \
 				  "don't" : "do not","hadn't" : "had not","hasn't" : "has not","haven't" : "have not","he'd" : "he had","he'll" : "he will", \
 				  "he's" : "he is","I'd" : "I had","I'll" : "I will","I'm" : "I am","I've" : "I have","isn't" : "is not","it's" : \
@@ -16,11 +22,16 @@ apostropheList = {"n't" : "not","aren't" : "are not","can't" : "cannot","couldn'
 				  "where's" : "where is","who'd" : "who had", "who'll" : "who will","who're" : "who are","who's" : "who is","who've" : "who have", \
 				  "won't" : "will not","wouldn't" : "would not", "you'd" : "you had","you'll" : "you will","you're" : "you are","you've" : "you have"}
 
+#Removing stop words might lead to better data analysis
 stopWords = stopwords.words("english")
+
+#Exclude punctuations from the reviews
 exclude = set(string.punctuation)
+
+#The two lists which holds the review title and the corresponding reviews
 reviewTitle = []
 reviewContent = []
-alpha = 0.2
+alpha = 0.6
 
 with open("modified.txt") as f:
 	review = []

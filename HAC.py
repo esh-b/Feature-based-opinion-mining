@@ -1,3 +1,7 @@
+"""
+ The HAC algorithm implementation - Extraction of potential features from the reviews
+"""
+
 import re
 import nltk
 import string
@@ -11,6 +15,7 @@ from textblob import Blobber
 from textblob.taggers import NLTKTagger
 from textblob_aptagger import PerceptronTagger
 
+#Dict to convert the raw user text to meaningful words for analysis
 apostropheList = {"n't" : "not","aren't" : "are not","can't" : "cannot","couldn't" : "could not","didn't" : "did not","doesn't" : "does not", \
 				  "don't" : "do not","hadn't" : "had not","hasn't" : "has not","haven't" : "have not","he'd" : "he had","he'll" : "he will", \
 				  "he's" : "he is","I'd" : "I had","I'll" : "I will","I'm" : "I am","I've" : "I have","isn't" : "is not","it's" : \
@@ -20,10 +25,15 @@ apostropheList = {"n't" : "not","aren't" : "are not","can't" : "cannot","couldn'
 				  "weren't" : "were not", "what'll" : "what will","what're" : "what are","what's" : "what is","what've" : "what have", \
 				  "where's" : "where is","who'd" : "who had", "who'll" : "who will","who're" : "who are","who's" : "who is","who've" : "who have", \
 				  "won't" : "will not","wouldn't" : "would not", "you'd" : "you had","you'll" : "you will","you're" : "you are","you've" : "you have"}
-				  
+
+#Removing stop words might lead to better data analysis				  
 stopWords = stopwords.words("english")
+
+#Exclude punctuations from the reviews
 exclude = set(string.punctuation)
 exclude.remove("_")
+
+#Remove all the hyperlinks from the reviews
 linkPtrn = re.compile("^(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?$")
 
 #English vocabulary
@@ -32,23 +42,15 @@ vocabList = set(w.lower() for w in nltk.corpus.words.words())
 
 #Max hops to find the nearby noun from the position of adjective
 maxHops = 4
-t0 = nltk.DefaultTagger('NN')
-brown_tagged_sents = brown.tagged_sents(categories='news')
-train_sents = brown_tagged_sents[:4160]
-t1 = nltk.UnigramTagger(train_sents, backoff = t0)
-t2 = nltk.BigramTagger(train_sents, backoff = t1)
 
-
+#Find all the potential features from the reviews
 def findFeatures(reviewContent,filename):
-
 	#nounScores is the dict containing nouns from all reviews and their respective scores from HAC algorithm
 	nounScores = dict()
 
 	#adjDict dict contains adjective and the corresponding noun which it is assigned to
 	adjDict = dict()
-	#tb = Blobber(pos_tagger=PerceptronTagger()) 
-	tb = Blobber(pos_tagger=NLTKTagger())
-
+	tb = Blobber(pos_tagger = NLTKTagger())
 
 	for a in xrange(len(reviewContent)):								#Stores the score of the nouns
 		for i in xrange(len(reviewContent[a])):
@@ -56,15 +58,12 @@ def findFeatures(reviewContent,filename):
 			text = ''.join(ch for ch in text if ch not in exclude)
 			text = nltk.word_tokenize(text)
 			x = nltk.pos_tag(text)
-			#x = TextBlob(text).tags #textblob tagger
-			#x = tb(text).tags #Perceptron tagger 
+
 			#Get the noun/adjective words and store it in tagList
 			tagList = []
 			for e in x:
 				if(e[1] == "NN" or e[1] == "JJ"):
 					tagList.append(e)
-				
-			#print tagList
 	
 			#Add the nouns(which are not in the nounScores dict) to the dict
 			for e in tagList:
@@ -114,13 +113,10 @@ def findFeatures(reviewContent,filename):
 
 def filterAdj(nounScores, adjDict,filename):
 	adjectList = list(adjDict.keys())
-#Uncomment the loop below to show the nouns and their scores in sorted order
 	nouns = []
 	for key, value in nounScores.items():
-		#print("Noun:", key, "--> Score:", value)
 		if value >= 3:
 			nouns.append(key)
-	#print nouns
 	nouns1 = ["sound quality","battery life","great phone","cell phone","menu option","color screen","flip phone","samsung phone","nokia phones","corporate email","ring tone","tmobile service"]
 
 	nouns = set(nouns)
@@ -189,34 +185,6 @@ def filterAdj(nounScores, adjDict,filename):
 				f.write(" ")
 			f.write(".\r\n")
 
-	return adjectList	
-
-"""
-nounList = nounScores.keys()
-finalAdjList = []
-intersect = set(adjectList).intersection(nounList)
-adjectList = set(adjectList).difference(intersect)
-
-for i in adjectList:
-	if (enchVocab.check(str(i)) and len(i) > 2):
-		finalAdjList.append(i)
-"""
-
-"""
-def intersect(a, b):
-    return list(set(a) & set(b))
-
-
-score = ['canonpowershotg3', 'use', 'picture', 'picturequality', 'camera', 'dial', 'viewfinder', 'speed', 'autosetting', 'canong3', 'photoquality', 'feature', 'darndiopteradjustmentdial', 'exposurecontrol', 'meteringoption', 'spotmetering', '4mp', 'zoom', 'focus', 'size', 'design', 'lcd', 'opticalzoom', 'software', 'lenscap', 'menu', 'control', 'camera', 'print', 'battery', 'photo', 'manualmode', 'feel', 'fourmegapixel', 'product', 'nightmode', 'lenscover', 'zoominglever', 'color', 'price', 'grain', 'flashphoto', 'g3', 'lagtime', 'depth', 'flash', 'externalflashhotshoe', 'image', 'rawimage', 'batterylife', 'manualfunction', 'service', 'automode', 'canon', 'rawformat', 'shape', 'lightautocorrection', 'whiteoffset', 'lowlightfocus', 'unresponsiveness', 'delay', '4mpcamera', 'body', 'casing', 'performance', 'look', 'finish', 'tiffformat', 'lag', 'import', 'manual', 'stitchpicture', 'display', 'compactflash', 'noise', 'automode', 'memorycard', 'made', 'lens', 'lever', 'strap', 'option', 'learning', 'imagequality', 'function', 'macro', '4mpresolution', 'distortion', 'shot', 'remote', 'hotshoeflash', 'batterychargingsystem', 'highlight', 'nooffbutton', 'download', 'optic', 'digitalcamera', 'quality', 'weight']
-
-#score = set(score)
-
-intersection = intersect(nouns,score)
-#print "Length of intersection : ",str(len(intersection))
-#print "Length of Predicted : ",str(len(nouns))
-#print "Length of Actual : ",str(len(score))
-print "Precision : ",str(len(intersection)*1.0/len(nouns))
-print "Recall : " , str((len(intersection)*1.0)/len(score))
-"""
+	return adjectList
 		
 	

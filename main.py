@@ -32,13 +32,13 @@ with open(filename) as f:
 				reviewContent.append(review)
 				review = []
 			reviewTitle.append(line.split("[+][t]")[1].rstrip("\r\n"))
-			posCount = posCount + 1
+			posCount += 1
 		elif line[:6] == "[-][t]":							#Incase the line starts with [t], then its the title of review
 			if review:
 				reviewContent.append(review)
 				review = []
 			reviewTitle.append(line.split("[-][t]")[1].rstrip("\r\n"))
-			negCount = negCount + 1
+			negCount += 1
 		else:	
 			if "##" in line:								#Each line in review starts with '##'
 				x = line.split("##")
@@ -64,12 +64,9 @@ adjScores = AdjScore.getScore(adjDict,filename)
 #MOS algorithm to get feature score and review score
 posRevIndex, negRevIndex, avgFeatScore = MOS.rankFeatures(adjScores, featureList, reviewTitle, reviewContent)
 
-total = posCount + negCount
+totalRevCount = posCount + negCount
+print("Number of Wrong Classifications:", abs(negCount - len(negRevIndex)) , " out of " , totalRevCount)
 
-print "Number of Wrong Classifications are " , abs(negCount-len(negRevIndex)) , " out of " , total
-
-count = abs(negCount-len(negRevIndex))
-
-
-print "Accuracy " , (total-count)*100.0/total
+count = abs(negCount - len(negRevIndex))
+print("Accuracy:", (totalRevCount - count) * 100.0 / totalRevCount)
 
