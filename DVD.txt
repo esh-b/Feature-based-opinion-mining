@@ -31,7 +31,7 @@
 ##i have done some research and experimenting with the remote when my apex ad-2500 seemed to have lost its video signal . 
 i/p button[+2]##im a more happier person after discovering the i/p button ! 
 ##the button was probably accidentally pushed to cause the black screen in the first place . 
-dvd player[+2]##but , if you 're looking for my opinion of the apex dvd player , i love it ! 
+dvd player[+2]##but ,if you 're looking for my opinion of the apex dvd player , i love it ! 
 dvd player[+1][p]##it practically plays almost everything you give it . 
 player[+2],sound[-1]##i 've had the player for about 2 years now and it still performs nicely with the exception of an occasional wwhhhrrr sound from the motor . 
 price[+2]##for the price it is a well spent investment ! 
