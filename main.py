@@ -64,6 +64,7 @@ adjScores = AdjScore.getScore(adjDict,filename)
 #MOS algorithm to get feature score and review score
 posRevIndex, negRevIndex, avgFeatScore = MOS.rankFeatures(adjScores, featureList, reviewTitle, reviewContent)
 
+<<<<<<< HEAD
 total = posCount + negCount
 
 print "Number of Wrong Classifications are " , abs(negCount-len(negRevIndex)) , " out of " , total
@@ -74,4 +75,15 @@ count = abs(negCount-len(negRevIndex))
 print "Accuracy " , (total-count)*100.0/total
 
 
+=======
+with open('featureScore.txt', 'w') as fp:
+    fp.write('\n'.join('%s, %s' % x for x in avgFeatScore))
+>>>>>>> a09fe9531883889628154fb183837ae28a7a4180
 
+with open('positiveReviews.txt', 'w') as fp:
+	for x, y in posRevIndex.items():
+		fp.write('[t] ' + reviewTitle[x] + '\n' + '[r] ' + ''.join(reviewContent[x]) + '\n\n')
+
+with open('negativeReviews.txt', 'w') as fp:
+	for x, y in negRevIndex.items():
+		fp.write('[t] ' + reviewTitle[x] + '\n' + '[r] ' + ''.join(reviewContent[x]) + '\n\n')
