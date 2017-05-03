@@ -114,7 +114,6 @@ def findFeatures(reviewContent,filename):
 
 def filterAdj(nounScores, adjDict,filename):
 	adjectList = list(adjDict.keys())
-<<<<<<< HEAD
 #Uncomment the loop below to show the nouns and their scores in sorted order
 	nouns = []
 	for key, value in nounScores.items():
@@ -189,36 +188,6 @@ def filterAdj(nounScores, adjDict,filename):
 						e = count
 				f.write(" ")
 			f.write(".\r\n")
-=======
-	finalAdjList = []
-	for i in adjectList:
-		if (enchVocab.check(str(i)) and len(i) > 2):
-			finalAdjList.append(i)
-
-	phrasesDict = OrderedDict(sorted(phrasesDict.items(), key=operator.itemgetter(1), reverse=True))
-	newPhrases = dict()
-
-	for line_words, count in phrasesDict.items():
-		line_words = ' '.join([apostropheList[word] if word in apostropheList else word for word in line_words.split()])
-		line_words = ''.join(ch for ch in line_words if ch not in exclude)
-		line_words = re.sub(r' [a-z][$]? ', ' ', line_words)
-		line_words = [Word(word).lemmatize() for word in line_words.split() if(word not in stopwords.words("english") and not word.isdigit()) and len(word) > 2]
-		line_words = ' '.join(line_words)
-		if(len(line_words.strip(" ").split()) == 2):
-			if(line_words in newPhrases):
-				newPhrases[line_words] += count
-			else:
-				newPhrases[line_words] = count
-
-	newPhrases = OrderedDict(sorted(newPhrases.items(), key=operator.itemgetter(1), reverse=True))
-	
-	features = []
-	for index, key in enumerate(nounScores):
-		value = nounScores[key]
-		if value >= 3:
-			if "_" in key or (enchVocab.check(str(key)) and len(key) > 2):
-				features.append(key)
->>>>>>> a09fe9531883889628154fb183837ae28a7a4180
 
 	return adjectList	
 
