@@ -35,7 +35,7 @@ color[-2]##the colors on the screen are not as crisp as i 'd have liked them to 
 backlight[-1]##the backlight on the phone goes off way too quickly ( dangerous when you 're driving at night ) , and there 's no way to change this -- 
 ##i checked with nokia . 
 button[-1]##the buttons on the phone are small , even for my small fingertips , but you get used to them rather quickly . 
-menu options[-1]##the menu options are uncreative , as you can 't see a full screen of menu items to pick from ; you have to scroll up and down to find what you 're looking for ( yes , this is minor , but not when you 're trying to keep your eye on the road ! ) . 
+menu options[-1]##the menu options are uncreative , as you can 't see a full screen of menu items to pick from ; you have to scroll up and down to find what you 're looking for  ( yes , this is minor , but not when you 're trying to keep your eye on the road ! ) . 
 ##more downside to this phone ? 
 volume[-2]##the volume . 
 ##oh my goodness -- 
