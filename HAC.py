@@ -23,8 +23,8 @@ apostropheList = {"n't" : "not","aren't" : "are not","can't" : "cannot","couldn'
 				  
 stopWords = stopwords.words("english")
 exclude = set(string.punctuation)
-linkPtrn = re.compile("^(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?$")
 exclude.remove("_")
+linkPtrn = re.compile("^(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?$")
 
 #English vocabulary
 enchVocab = enchant.Dict("en_US")
