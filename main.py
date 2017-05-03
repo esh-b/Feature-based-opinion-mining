@@ -73,5 +73,3 @@ count = abs(negCount-len(negRevIndex))
 
 print "Accuracy " , (total-count)*100.0/total
 
-
-
