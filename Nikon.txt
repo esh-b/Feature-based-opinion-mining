@@ -21,7 +21,7 @@ rechargable battery[+2]##comes with a 16 mb compact flash and one rechargable ba
 ##i bought a 256 mb cf and a second battery , so it 's good to go on a long vacation . 
 camera[+2]##i enthusiastically recommend this camera . 
 [+][t]perfect to grow into 
-##i got my camera three days back , and although i had some experience with digital cameras prior to purchasing this one , i still rate myself as a beginner . 
+##i got my camera three days back , and although i had some  experience with digital cameras prior to purchasing this one , i still rate myself as a beginner . 
 ##i bought this camera because it fit my budget and the pre-production and production model reviews were positive . 
 camera[+2][p], use[+1][u], feature[+2]##it 's easy to use , and yet very feature rich . 
 auto mode[+1],scene mode[+2]##in the auto mode it functions basically as a point and click , the scene modes are very easy to use and produce good results . 
