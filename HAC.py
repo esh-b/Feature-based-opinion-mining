@@ -6,6 +6,10 @@ import operator
 from nltk.corpus import stopwords
 from collections import OrderedDict 
 from textblob import TextBlob, Word
+from nltk.corpus import brown
+from textblob import Blobber
+from textblob.taggers import NLTKTagger
+from textblob_aptagger import PerceptronTagger
 
 apostropheList = {"n't" : "not","aren't" : "are not","can't" : "cannot","couldn't" : "could not","didn't" : "did not","doesn't" : "does not", \
 				  "don't" : "do not","hadn't" : "had not","hasn't" : "has not","haven't" : "have not","he'd" : "he had","he'll" : "he will", \
@@ -28,53 +32,43 @@ vocabList = set(w.lower() for w in nltk.corpus.words.words())
 
 #Max hops to find the nearby noun from the position of adjective
 maxHops = 4
+t0 = nltk.DefaultTagger('NN')
+brown_tagged_sents = brown.tagged_sents(categories='news')
+train_sents = brown_tagged_sents[:4160]
+t1 = nltk.UnigramTagger(train_sents, backoff = t0)
+t2 = nltk.BigramTagger(train_sents, backoff = t1)
 
-def findFeatures(reviewContent):
+
+def findFeatures(reviewContent,filename):
+
+	#nounScores is the dict containing nouns from all reviews and their respective scores from HAC algorithm
 	nounScores = dict()
+
+	#adjDict dict contains adjective and the corresponding noun which it is assigned to
 	adjDict = dict()
-	phrasesDict = dict()
+	#tb = Blobber(pos_tagger=PerceptronTagger()) 
+	tb = Blobber(pos_tagger=NLTKTagger())
 
-	for a in range(len(reviewContent)):								#Stores the score of the nouns
-		for i in range(len(reviewContent[a])):
-			line_words = reviewContent[a][i]
-			#line_words = str(TextBlob(line_words).correct())
-			#line_words = ' '.join(TextBlob(line_words).words)
-			#if 'room' in line_words:
-			#	line_words = re.sub('room', 'zoom', line_words)
 
-			phrases = TextBlob(line_words).noun_phrases
-			for p in phrases:
-				if(len(p.split()) == 2):
-					if(p not in phrasesDict):
-						phrasesDict[p] = 1
-					else:
-						phrasesDict[p] += 1
-
-			line_words = ' '.join([apostropheList[word] if word in apostropheList else word for word in line_words.split()])
-
-			line_words = re.sub(linkPtrn, '', line_words)
-			line_words = ''.join(ch for ch in line_words if ch not in exclude)
-			line_words = re.sub(r' [a-z][$]? ', ' ', line_words)
-
-			line_words = [Word(word).lemmatize() for word in line_words.split() if(word not in stopwords.words("english") and not word.isdigit()) and len(word) > 2]
-			line_words = ' '.join(line_words)
-
-			line_words = nltk.word_tokenize(line_words)
-			x = nltk.pos_tag(line_words)
-			#x = TextBlob(line_words).tags #textblob tagger
+	for a in xrange(len(reviewContent)):								#Stores the score of the nouns
+		for i in xrange(len(reviewContent[a])):
+			text = ' '.join([word for word in reviewContent[a][i].split() if word not in stopwords.words("english")])
+			text = ''.join(ch for ch in text if ch not in exclude)
+			text = nltk.word_tokenize(text)
+			x = nltk.pos_tag(text)
+			#x = TextBlob(text).tags #textblob tagger
 			#x = tb(text).tags #Perceptron tagger 
-
 			#Get the noun/adjective words and store it in tagList
 			tagList = []
-
 			for e in x:
 				if(e[1] == "NN" or e[1] == "JJ"):
 					tagList.append(e)
-		
-			tagList = list(x)
+				
+			#print tagList
+	
 			#Add the nouns(which are not in the nounScores dict) to the dict
 			for e in tagList:
-				if "NN" in e[1]:
+				if e[1] == "NN":
 					if e[0] not in nounScores:
 						nounScores[e[0]] = 0
 
@@ -82,7 +76,7 @@ def findFeatures(reviewContent):
 			for l in range(len(tagList)):
 				if("JJ" in tagList[l][1]):
 					j = k = leftHop = rightHop = -1
-					
+				
 					#Find the closest noun to the right of the adjective in the line
 					for j in range(l + 1, len(tagList)):
 						if(j == l + maxHops):
@@ -116,47 +110,86 @@ def findFeatures(reviewContent):
 						nounScores[tagList[j][0]] += 1
 	
 	nounScores = OrderedDict(sorted(nounScores.items(), key=operator.itemgetter(1)))
-	return filterAdj(nounScores, adjDict, phrasesDict)
+	return filterAdj(nounScores, adjDict,filename)
 
-def filterAdj(nounScores, adjDict, phrasesDict):
+def filterAdj(nounScores, adjDict,filename):
 	adjectList = list(adjDict.keys())
-	finalAdjList = []
-	for i in adjectList:
-		if (enchVocab.check(str(i)) and len(i) > 2):
-			finalAdjList.append(i)
-
-	phrasesDict = OrderedDict(sorted(phrasesDict.items(), key=operator.itemgetter(1), reverse=True))
-	newPhrases = dict()
-
-	for line_words, count in phrasesDict.items():
-		line_words = ' '.join([apostropheList[word] if word in apostropheList else word for word in line_words.split()])
-		line_words = ''.join(ch for ch in line_words if ch not in exclude)
-		line_words = re.sub(r' [a-z][$]? ', ' ', line_words)
-		line_words = [Word(word).lemmatize() for word in line_words.split() if(word not in stopwords.words("english") and not word.isdigit()) and len(word) > 2]
-		line_words = ' '.join(line_words)
-		if(len(line_words.strip(" ").split()) == 2):
-			if(line_words in newPhrases):
-				newPhrases[line_words] += count
-			else:
-				newPhrases[line_words] = count
-
-	newPhrases = OrderedDict(sorted(newPhrases.items(), key=operator.itemgetter(1), reverse=True))
-
-	"""
-	for i, j in newPhrases.items():
-		print(i)
-	"""
-
-	features = []
-	for index, key in enumerate(nounScores):
-		value = nounScores[key]
+#Uncomment the loop below to show the nouns and their scores in sorted order
+	nouns = []
+	for key, value in nounScores.items():
+		#print("Noun:", key, "--> Score:", value)
 		if value >= 3:
-			if "_" in key or (enchVocab.check(str(key)) and len(key) > 2):
-				#if "_" in key:
-				#	key = key.replace("_", "")
-				features.append(key)
+			nouns.append(key)
+	#print nouns
+	nouns1 = ["sound quality","battery life","great phone","cell phone","menu option","color screen","flip phone","samsung phone","nokia phones","corporate email","ring tone","tmobile service"]
 
-	return features, adjectList
+	nouns = set(nouns)
+
+	stopWords = stopwords.words("english")
+	exclude = set(string.punctuation)
+	reviewTitle = []
+	reviewContent = []
+
+	with open(filename) as f:
+		review = []
+		for line in f:
+			if line[:6] == "[+][t]":
+				if review:
+					reviewContent.append(review)
+					review = []
+				reviewTitle.append(line.split("[+][t]")[1].rstrip("\r\n"))
+			elif line[:6] == "[-][t]":
+				if review:
+					reviewContent.append(review)
+					review = []
+				reviewTitle.append(line.split("[-][t]")[1].rstrip("\r\n"))
+			else:
+				if "##" in line:
+					x = line.split("##")
+					#if len(x[0]) != 0:
+					for i in xrange(1, len(x)):
+						review.append(x[i].rstrip("\r\n"))
+				else:
+					continue
+		reviewContent.append(review)
+
+	#tb = Blobber(pos_tagger=PerceptronTagger()) 
+	tb = Blobber(pos_tagger=NLTKTagger())
+	nounScores = dict()
+	f = open('modified.txt', 'w')
+	for a in xrange(len(reviewContent)):
+		f.write("[t]"+reviewTitle[a])
+		f.write("\r\n")	
+										#Stores the score of the nouns
+		for i in xrange(len(reviewContent[a])):
+			text = reviewContent[a][i]
+			x = tb(text).tags #Perceptron tagger
+			#Get the noun/adjective words and store it in tagList
+			tagList = []
+			e = 0
+			f.write("##")
+	
+			while e<len(x):
+				tagList = []
+				f.write(x[e][0])
+				e = e+1
+				count = e
+				if(count<len(x) and x[count-1][1] == "NN" and x[count][1] == "NN"):
+					tagList.append(x[count-1][0])
+				
+					while(count < len(x) and x[count][1] == "NN"):
+						tagList.append(x[count][0])
+						count = count+1
+				if tagList != [] and len(tagList) == 2:
+					if set(tagList) <= nouns: 
+					
+						for t in range(1,len(tagList)):
+							f.write(tagList[t])
+						e = count
+				f.write(" ")
+			f.write(".\r\n")
+
+	return adjectList	
 
 """
 nounList = nounScores.keys()

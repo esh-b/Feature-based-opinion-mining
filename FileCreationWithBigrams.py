@@ -1,3 +1,5 @@
+"Creating File using Bigrams"
+
 import re
 import nltk
 import string
@@ -34,10 +36,6 @@ def fileCreation(reviewContent,filename):
 	for a in range(len(reviewContent)):								#Stores the score of the nouns
 		for i in range(len(reviewContent[a])):
 			line_words = reviewContent[a][i]
-			#line_words = str(TextBlob(line_words).correct())
-			#line_words = ' '.join(TextBlob(line_words).words)
-			#if 'room' in line_words:
-			#	line_words = re.sub('room', 'zoom', line_words)
 
 			phrases = TextBlob(line_words).noun_phrases
 			for p in phrases:
@@ -47,7 +45,7 @@ def fileCreation(reviewContent,filename):
 					else:
 						phrasesDict[p] += 1
 
-	
+	#Calling filterAdj function
 	filterAdj(phrasesDict,filename)
 
 def filterAdj(phrasesDict,filename):
@@ -56,6 +54,7 @@ def filterAdj(phrasesDict,filename):
 	exclude = set(string.punctuation)
 	exclude.remove("_")
 	for line_words, count in phrasesDict.items():
+		#Preprocessing text
 		line_words = ' '.join([apostropheList[word] if word in apostropheList else word for word in line_words.split()])
 		line_words = ''.join(ch for ch in line_words if ch not in exclude)
 		line_words = re.sub(r' [a-z][$]? ', ' ', line_words)
@@ -74,7 +73,6 @@ def filterAdj(phrasesDict,filename):
 	for key, value in newPhrases.items():
 		if value >= 3:
 			nouns1.append(key)
-			print key
 
 
 	stopWords = stopwords.words("english")
@@ -86,11 +84,17 @@ def filterAdj(phrasesDict,filename):
 	with open(filename) as f:
 		review = []
 		for line in f:
-			if line[:3] == "[t]":
+			if line[:6] == "[+][t]":
 				if review:
 					reviewContent.append(review)
 					review = []
-				reviewTitle.append(line.split("[t]")[1].rstrip("\r\n"))
+				reviewTitle.append(line.split("[+][t]")[1].rstrip("\r\n"))
+			elif line[:6] == "[-][t]":
+				if review:
+					reviewContent.append(review)
+					review = []
+				reviewTitle.append(line.split("[-][t]")[1].rstrip("\r\n"))
+
 			else:
 				if "##" in line:
 					x = line.split("##")
@@ -120,7 +124,6 @@ def filterAdj(phrasesDict,filename):
 				tagList = ""
 				temp = ""
 				wrt = x[e][0]
-				#f.write(x[e][0])
 				e = e+1
 				count = e
 				tp = 0
@@ -149,33 +152,11 @@ def filterAdj(phrasesDict,filename):
 				tagList = []
 				e = 0
 				f.write("##")
-				"""
-				while e<len(x):
-					tagList = []
-					f.write(x[e][0])
-					e = e+1
-					count = e
-					if(count<len(x) and x[count-1][1] == "NN" and x[count][1] == "NN"):
-						tagList.append(x[count-1][0])
-				
-						while(count < len(x) and x[count][1] == "NN"):
-							tagList.append(x[count][0])
-							count = count+1
-					if tagList != []:
-						if set(tagList) <= nouns: 
-							print tagList
-					
-							for t in range(1,len(tagList)):
-								f.write("_"+tagList[t])
-							e = count
-					f.write(" ")
-				f.write(".\r\n")
-				"""
+
 				while e<len(x):
 					tagList = ""
 					temp = ""
 					wrt = x[e][0]
-					#f.write(x[e][0])
 					e = e+1
 					count = e
 					tp = 0
@@ -186,8 +167,6 @@ def filterAdj(phrasesDict,filename):
 					if tagList != "":
 						#Checking if consecutive nouns we found out are in noun phrases
 						if tagList in nouns1: 
-							#print tagList
-							#Removing space between words in a bigram
 							tagList = tagList.replace(' ', '')
 							f.write(tagList)
 							tp = 1

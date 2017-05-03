@@ -5,7 +5,7 @@ The main code which runs the entire review analysis
 
 import sys
 import HAC
-import MOS
+import math
 import FileCreationWithBigrams
 import AdjScore
 import operator
@@ -21,15 +21,24 @@ reviewTitle = []
 #reviewContent is the list containing all reviews
 reviewContent = []
 
+posCount = 0
+negCount = 0
 #Extract review title and content from the file
 with open(filename) as f:
 	review = []
 	for line in f:
-		if line[:3] == "[t]":							#Incase the line starts with [t], then its the title of review
+		if line[:6] == "[+][t]":							#Incase the line starts with [t], then its the title of review
 			if review:
 				reviewContent.append(review)
 				review = []
-			reviewTitle.append(line.split("[t]")[1].rstrip("\r\n"))
+			reviewTitle.append(line.split("[+][t]")[1].rstrip("\r\n"))
+			posCount = posCount + 1
+		elif line[:6] == "[-][t]":							#Incase the line starts with [t], then its the title of review
+			if review:
+				reviewContent.append(review)
+				review = []
+			reviewTitle.append(line.split("[-][t]")[1].rstrip("\r\n"))
+			negCount = negCount + 1
 		else:	
 			if "##" in line:								#Each line in review starts with '##'
 				x = line.split("##")
@@ -42,14 +51,27 @@ with open(filename) as f:
 #Creating a File attaching Bigrams
 FileCreationWithBigrams.fileCreation(reviewContent,filename)
 
+import MOS
+import WithNgrams
 
 #The HAC algorithm to extract features and adjectives in the review
-featureList, adjDict = HAC.findFeatures(reviewContent)
+adjDict = HAC.findFeatures(reviewContent,filename)
+featureList = WithNgrams.final()
 
 #Get adjective scores for each adjective
-adjScores = AdjScore.getScore(adjDict)
+adjScores = AdjScore.getScore(adjDict,filename)
 
 #MOS algorithm to get feature score and review score
 posRevIndex, negRevIndex, avgFeatScore = MOS.rankFeatures(adjScores, featureList, reviewTitle, reviewContent)
+
+total = posCount + negCount
+
+print "Number of Wrong Classifications are " , abs(negCount-len(negRevIndex)) , " out of " , total
+
+count = abs(negCount-len(negRevIndex))
+
+
+print "Accuracy " , (total-count)*100.0/total
+
 
 
