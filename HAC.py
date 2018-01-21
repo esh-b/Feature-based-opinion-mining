@@ -13,7 +13,6 @@ from textblob import TextBlob, Word
 from nltk.corpus import brown
 from textblob import Blobber
 from textblob.taggers import NLTKTagger
-from textblob_aptagger import PerceptronTagger
 
 #Dict to convert the raw user text to meaningful words for analysis
 apostropheList = {"n't" : "not","aren't" : "are not","can't" : "cannot","couldn't" : "could not","didn't" : "did not","doesn't" : "does not", \
@@ -52,8 +51,8 @@ def findFeatures(reviewContent,filename):
 	adjDict = dict()
 	tb = Blobber(pos_tagger = NLTKTagger())
 
-	for a in xrange(len(reviewContent)):								#Stores the score of the nouns
-		for i in xrange(len(reviewContent[a])):
+	for a in range(len(reviewContent)):								#Stores the score of the nouns
+		for i in range(len(reviewContent[a])):
 			text = ' '.join([word for word in reviewContent[a][i].split() if word not in stopwords.words("english")])
 			text = ''.join(ch for ch in text if ch not in exclude)
 			text = nltk.word_tokenize(text)
@@ -143,21 +142,20 @@ def filterAdj(nounScores, adjDict,filename):
 				if "##" in line:
 					x = line.split("##")
 					#if len(x[0]) != 0:
-					for i in xrange(1, len(x)):
+					for i in range(1, len(x)):
 						review.append(x[i].rstrip("\r\n"))
 				else:
 					continue
 		reviewContent.append(review)
 
-	#tb = Blobber(pos_tagger=PerceptronTagger()) 
 	tb = Blobber(pos_tagger=NLTKTagger())
 	nounScores = dict()
 	f = open('modified.txt', 'w')
-	for a in xrange(len(reviewContent)):
+	for a in range(len(reviewContent)):
 		f.write("[t]"+reviewTitle[a])
 		f.write("\r\n")	
 										#Stores the score of the nouns
-		for i in xrange(len(reviewContent[a])):
+		for i in range(len(reviewContent[a])):
 			text = reviewContent[a][i]
 			x = tb(text).tags #Perceptron tagger
 			#Get the noun/adjective words and store it in tagList

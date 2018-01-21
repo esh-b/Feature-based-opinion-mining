@@ -99,7 +99,7 @@ def filterAdj(phrasesDict,filename):
 				if "##" in line:
 					x = line.split("##")
 					#if len(x[0]) != 0:
-					for i in xrange(1, len(x)):
+					for i in range(1, len(x)):
 						review.append(x[i].rstrip("\r\n"))
 				else:
 					continue
@@ -111,7 +111,7 @@ def filterAdj(phrasesDict,filename):
 
 		#Writing to a file
 		f = open('modified.txt', 'w')
-		for a in xrange(len(reviewContent)):
+		for a in range(len(reviewContent)):
 			f.write("[t]")
 			
 			#Finding Bigrams in title
@@ -145,7 +145,7 @@ def filterAdj(phrasesDict,filename):
 			f.write("\r\n")	
 								
 			#Finding bigrams in review
-			for i in xrange(len(reviewContent[a])):
+			for i in range(len(reviewContent[a])):
 				text = reviewContent[a][i]
 				x = tb(text).tags #NLTK tagger
 				

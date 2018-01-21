@@ -55,7 +55,9 @@ def rankFeatures(adj_scores, features, reviewTitle, reviewContent):
 	#Lists containing indices of the reviewContent list
 	pos_review_index = dict()
 	neg_review_index = dict()
+	neut_review_index = dict()
 
+	print(features)
 	#scores for a feature from all the reviews
 	global_noun_scores = dict()
 
@@ -174,6 +176,7 @@ def rankFeatures(adj_scores, features, reviewTitle, reviewContent):
 
 		#Incase both title_score and review_scores are 0's, then ignore that review
 		if(avg_score == 0):
+			neut_review_index[a] = avg_score
 			continue
 
 		if(avg_score > 0):
@@ -190,8 +193,23 @@ def rankFeatures(adj_scores, features, reviewTitle, reviewContent):
 	pos_review_index = OrderedDict(sorted(pos_review_index.items(), key=operator.itemgetter(1), reverse=True))
 	neg_review_index = OrderedDict(sorted(neg_review_index.items(), key=operator.itemgetter(1)))
 
-	#os.remove("modified.txt")
-	return pos_review_index, neg_review_index, avg_feature_score
+	posPredIndex = []
+	negPredIndex = []
+	neutPredIndex = []
+
+	#Gather the review index only (not score) from dict
+	for i, j in pos_review_index.items():
+		posPredIndex.append(i)
+
+	for i, j in neg_review_index.items():
+		negPredIndex.append(i)
+
+	for i, j in neut_review_index.items():
+		neutPredIndex.append(i)
+
+	#Remove the temp file
+	os.remove("modified.txt")
+	return posPredIndex, negPredIndex, neutPredIndex, avg_feature_score
 
 #Find the closest feature for an adj. Assumes a noun is found within 3 steps from the adj.
 def find_closest_noun(wordIndex, line_words, features):
