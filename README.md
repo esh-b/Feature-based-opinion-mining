@@ -22,3 +22,7 @@
     * *positiveReviews.txt* which contains all the positive reviews as classified by the algorithm such that a positive review at line i expresses much positive opinion than a review at line j (j > i).
     * *negativeReviews.txt* which contains all the negative reviews such that a negative review at line i expresses much negative opinion than a review at line j (j > i).
     * *neutralReviews.txt* which contains all the neutral reviews.
+
+### Further steps:
+*   This project is just the implementation of the paper in the 'Project Summary' directory. Improvements can be made in various parts especially in the feature extraction module.
+*   People are highly welcome to contribute to the project.
