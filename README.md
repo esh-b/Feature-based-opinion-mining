@@ -21,3 +21,4 @@
     * *featureScore.txt* which contains all the potential features about the product and their scores.
     * *positiveReviews.txt* which contains all the positive reviews as classified by the algorithm such that a positive review at line i expresses much positive opinion than a review at line j (j > i).
     * *negativeReviews.txt* which contains all the negative reviews such that a negative review at line i expresses much negative opinion than a review at line j (j > i).
+    * *neutralReviews.txt* which contains all the neutral reviews.
