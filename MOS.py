@@ -56,8 +56,7 @@ def rankFeatures(adj_scores, features, reviewTitle, reviewContent):
 	pos_review_index = dict()
 	neg_review_index = dict()
 	neut_review_index = dict()
-
-	print(features)
+	
 	#scores for a feature from all the reviews
 	global_noun_scores = dict()
 

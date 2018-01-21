@@ -3,6 +3,7 @@
 The main code which runs the entire review analysis
 """
 
+import os
 import sys
 import HAC
 import math
@@ -86,29 +87,33 @@ adjScores = AdjScore.getScore(adjDict,filename)
 posPredIndex, negPredIndex, neutPredIndex, avgFeatScore = MOS.rankFeatures(adjScores, featureList, 
 	reviewTitle, reviewContent)
 
+outputDir = "./Results_" + filename.split("/")[1]
+if not os.path.exists(outputDir):
+    os.makedirs(outputDir)
+
 #Write the predicted positive reviews to a file
-with open("positiveReviews.txt", "w") as filePos:
+with open(outputDir + "/positiveReviews.txt", "w") as filePos:
 	for i in posPredIndex:
 		for k in range(len(reviewContent[i])):
 			filePos.write(reviewContent[i][k])
 		filePos.write("\n")
 
 #Write the predicted negative reviews to a file
-with open("negativeReviews.txt", "w") as fileNeg:
+with open(outputDir + "/negativeReviews.txt", "w") as fileNeg:
 	for i in negPredIndex:
 		for k in range(len(reviewContent[i])):
 			fileNeg.write(reviewContent[i][k])
 		fileNeg.write("\n")
 
 #Write the predicted neutral reviews to a file
-with open("neutralReviews.txt", "w") as fileNeut:
+with open(outputDir + "/neutralReviews.txt", "w") as fileNeut:
 	for i in neutPredIndex:
 		for k in range(len(reviewContent[i])):
 			fileNeut.write(reviewContent[i][k])
 		fileNeut.write("\n")
 
 #Write the predicted neutral reviews to a file
-with open("featureScore.txt", "w") as fileFeat:
+with open(outputDir + "/featureScore.txt", "w") as fileFeat:
 	t = Texttable()
 	lst = [["Feature", "Score"]]
 	for tup in avgFeatScore:
@@ -116,7 +121,7 @@ with open("featureScore.txt", "w") as fileFeat:
 	t.add_rows(lst)
 	fileFeat.write(str(t.draw()))
 
-print("The files are successfully created.")
+print("The files are successfully created in the dir '" + outputDir + "'")
 
 #Evaluation metric
 PP = len(set(posActIndex).intersection(set(posPredIndex)))
@@ -136,5 +141,5 @@ t = Texttable()
 t.add_rows([['', 'Pred +', 'Pred -', 'Pred N'], ['Act +', PP, PNe, PN], ['Act -', NeP, NeNe, NeN], ['Act N', NP, NNe, NN]])
 print("Evaluation metric - Confusion matrix:")
 print("=====================================")
-print("Dataset:", filename)
+print("Dataset source:", filename)
 print(t.draw())
